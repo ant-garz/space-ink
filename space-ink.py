@@ -14,11 +14,11 @@ from datetime import date, datetime
 from lib.waveshare_epd import epd5in65f
 from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 
-def get_current_time_12hour():
+def getCurrentTime12HourFormat():
     """Gets the current time in 12-hour format for the current timezone."""
 
-    current_time = datetime.now(pytz.timezone('America/Chicago'))
-    return current_time.strftime("%I:%M:%S %p")
+    currentTime = datetime.now(pytz.timezone('America/Chicago'))
+    return currentTime.strftime("%I:%M:%S %p")
 
 def fetchImage() -> dict:
 
@@ -27,6 +27,7 @@ def fetchImage() -> dict:
     searchResponse = requests.get(requestURL)
     # extracting data in json format
     imageData = searchResponse.json()
+    print('apod retrieved')
     return imageData
 
 def downloadImage(imageUrl, imagesDirectoryPath, titleFormatted):
@@ -41,50 +42,50 @@ def downloadImage(imageUrl, imagesDirectoryPath, titleFormatted):
                 f.write(response.content)
     print('apod downloaded to local filesystem')
 
-def addTextToImage(image_path, text, font_path, font_size, text_color=(0, 0, 0)):
+def addTextToImage(imagePath, text, fontPath, fontSize, textColor=(0, 0, 0)):
     """
     Adds text to the bottom center of an image.
 
     Args:
-        image_path: Path to the image.
+        imagePath: Path to the image.
         text: Text to be added.
-        font_path: Path to the font file.
-        font_size: Font size.
-        text_color: Color of the text (default: black).
+        fontPath: Path to the font file.
+        fontSize: Font size.
+        textColor: Color of the text (default: black).
     """
 
     # Open the image
-    image = Image.open(image_path)
+    image = Image.open(imagePath)
     draw = ImageDraw.Draw(image)
 
     # Load the font
-    font = ImageFont.truetype(font_path, font_size)
-    smallFont =  ImageFont.truetype(font_path, 18)
+    font = ImageFont.truetype(fontPath, fontSize)
+    smallFont =  ImageFont.truetype(fontPath, 18)
 
     # Get text bounding box
     bbox = draw.textbbox((0, 0), text, font=font)
-    text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
+    textWidth = bbox[2] - bbox[0]
+    textHeight = bbox[3] - bbox[1]
 
     # Calculate the position
-    x = (image.width - text_width) // 2
-    y = image.height - text_height - 10  # 10 for a small padding from the bottom
+    x = (image.width - textWidth) // 2
+    y = image.height - textHeight - 10  # 10 for a small padding from the bottom
 
     # Draw the text
-    draw.text((x, y), text, font=font, fill=text_color)
+    draw.text((x, y), text, font=font, fill=textColor)
 
     # add the date to the top middle of the frame
     today = date.today()
 
     # Calculate text position for top middle
-    x = (image.width - text_width) // 2
+    x = (image.width - textWidth) // 2
     y = 0  # Adjust this for top margin
 
     # Draw the text
-    draw.text((x, y), "Rendered at: " + today.strftime("%Y-%m-%d") + " " + get_current_time_12hour(), font=smallFont, fill=text_color)
+    draw.text((x, y), "Rendered at: " + today.strftime("%Y-%m-%d") + " " + getCurrentTime12HourFormat(), font=smallFont, fill=textColor)
 
     # Save the image
-    image.save(image_path)
+    image.save(imagePath)
     print('added text to image')
 
 
@@ -110,16 +111,16 @@ def resizeImage(image, imagePath):
 
 def main():
     today = date.today()
-    print('script started at ' + today.strftime("%Y-%m-%d") + " " + get_current_time_12hour())
+    print('script started at ' + today.strftime("%Y-%m-%d") + " " + getCurrentTime12HourFormat())
     try:
         # fetch a dict of image data
         selectedImageData = fetchImage()
         # creating a list for the characters to be replaced
-        char_remov = [" ", ",", ":", "(", ")", '"', "/", ";", "'"]
+        charRemoveArray = [" ", ",", ":", "(", ")", '"', "/", ";", "'"]
 
         originalTitle = selectedImageData['title']
 
-        for char in char_remov:
+        for char in charRemoveArray:
             # remove potentially problematic chars from string we want to use in the filepath to avoid issues
             selectedImageData['title'] = selectedImageData['title'].replace(char, "_")
 
@@ -159,7 +160,6 @@ def main():
 
         Himage = Image.new('RGB', (epd.height, epd.width),
                            0xffffff)  # 255: clear the frame
-        draw = ImageDraw.Draw(Himage)
         epd.display(epd.getbuffer(Himage))
         time.sleep(3)
         epd.display(epd.getbuffer(img))
