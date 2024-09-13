@@ -1,5 +1,5 @@
 # Space ink
-Show pictures of space on an e-ink paper display
+Show the [NASA Astronomy Picture of the Day](https://apod.nasa.gov/apod/astropix.html) on an e-ink paper display
 ![Photo of e paper module displaying a photo from NASA's astronomy picture of the day.](assets/photo.jpg)
 
 ## Hardware used
