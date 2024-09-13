@@ -25,7 +25,8 @@ For this project to update on it's own with each new day, I used the `cron` serv
 
 - Open the crontab file with the command `crontab -e`
 - Add a new line with the schedule to run the script daily
-   - I chose to run this script everday at 8am. You can update this as desired. The line I added in the cronjob scheduler is `0 8 * * * sudo /usr/bin/python /home/USER/space-ink/space-ink.py`
+   - I chose to run this script everday at 8am. You can update this as desired. A helpful website I have used in the past is [https://crontab.guru/](https://crontab.guru/)
+   - `0 8 * * * sudo /usr/bin/python /home/USER/space-ink/space-ink.py`
 - Add a new line with the schedule to run the script when the system reboots
     - `@reboot  sleep 200 && sudo /usr/bin/python /home/USER/space-ink/space-ink.py`
 - Save and exit the file
