@@ -27,7 +27,6 @@ def fetchImage() -> dict:
     searchResponse = requests.get(requestURL)
     # extracting data in json format
     imageData = searchResponse.json()
-    print('apod retrieved')
     return imageData
 
 def downloadImage(imageUrl, imagesDirectoryPath, titleFormatted):
@@ -40,7 +39,6 @@ def downloadImage(imageUrl, imagesDirectoryPath, titleFormatted):
         if response.status_code == 200:
             with open(imagesDirectoryPath + titleFormatted + '.jpg', 'wb') as f:
                 f.write(response.content)
-    print('apod downloaded to local filesystem')
 
 def addTextToImage(imagePath, text, fontPath, fontSize, textColor=(0, 0, 0)):
     """
@@ -86,8 +84,6 @@ def addTextToImage(imagePath, text, fontPath, fontSize, textColor=(0, 0, 0)):
 
     # Save the image
     image.save(imagePath)
-    print('added text to image')
-
 
 def resizeImage(image, imagePath):
     # Resizing the image, given our display we want to ensure the photo fits well
@@ -106,8 +102,6 @@ def resizeImage(image, imagePath):
 
     # Saving the resized image with new background
     background.convert('RGB').save(imagePath)
-    print('resized image')
-
 
 def main():
     today = date.today()
@@ -164,7 +158,6 @@ def main():
         time.sleep(3)
         epd.display(epd.getbuffer(img))
         time.sleep(3)
-        print('displayed the photo' + filepath + '.jpg')
         quit()
     except IOError as e:
         print('something went wrong :(')
